@@ -14,7 +14,6 @@ class UserResource extends JsonResource
      */
     public function toArray($request)
     {
-        $roleResource = config('breezer.resources.user');
         return [
             'id'     => $this->id,
             'name'   => $this->name,

@@ -3,7 +3,9 @@
 namespace Bitfumes\Breezer\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Swift_TransportException;
 use Illuminate\Routing\Controller;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Password;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -24,7 +26,13 @@ class PasswordResetEmailController extends Controller
 
         if ($user) {
             $token = Password::createToken($user);
-            $user->sendPasswordResetNotification($token);
+            try {
+                $user->sendPasswordResetNotification($token);
+            } catch (Swift_TransportException $e) {
+                Log::error($e->getMessage());
+                return response(['errors' => ['error'=> 'Could not send email, try again', ],
+                ], Response::HTTP_UNPROCESSABLE_ENTITY);
+            }
         }
 
         return response(['message' => 'We have emailed your password reset link!'], Response::HTTP_ACCEPTED);

@@ -33,4 +33,9 @@ class RegisterRequest extends FormRequest
         $custom = gettype($custom) === 'array' ? $custom : $custom();
         return array_merge($rules, $custom);
     }
+
+    public function validatedFields()
+    {
+        return array_merge($this->validated(), ['password' => bcrypt($this->password)]);
+    }
 }

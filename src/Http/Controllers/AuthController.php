@@ -23,7 +23,7 @@ class AuthController extends Controller
 
     public function register(RegisterRequest $request)
     {
-        $user = $this->user::create($request->validated());
+        $user = $this->user::create($request->validatedFields());
         event(new Registered($user));
         return response(['message' => 'Now verify your email ID to activate your account'], Response::HTTP_CREATED);
     }

@@ -41,6 +41,6 @@ class ResetPasswordController extends Controller
         // redirect them back to where they came from with their error message.
         return $status == Password::PASSWORD_RESET
                     ? response(['message' => 'Your password has been reset!'], Response::HTTP_ACCEPTED)
-                    : response(['errors' => 'There is some problem resetting your password'], Response::HTTP_NOT_ACCEPTABLE);
+                    : response(['errors' => ['error'=>'There is some problem resetting your password']], Response::HTTP_NOT_ACCEPTABLE);
     }
 }

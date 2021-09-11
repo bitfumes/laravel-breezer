@@ -2,8 +2,9 @@
 
 namespace Bitfumes\Breezer\Http\Controllers;
 
+use Swift_TransportException;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
-use Illuminate\Auth\Events\Registered;
 use Symfony\Component\HttpFoundation\Response;
 
 class VerifyEmailController extends AuthController
@@ -20,7 +21,7 @@ class VerifyEmailController extends AuthController
     public function resend()
     {
         $user = $this->user::whereEmail(request('email'))->first();
-        event(new Registered($user));
+        $user->sendEmailVerificationNotification();
         return response('done', 202);
     }
 
@@ -37,7 +38,13 @@ class VerifyEmailController extends AuthController
         }
         if ($this->checkVerifySignature($user)) {
             $user->markEmailAsVerified();
-            Mail::to($user->email)->send(new $this->welcome_email($user, null));
+            try {
+                Mail::to($user->email)->send(new $this->welcome_email($user, null));
+            } catch (Swift_TransportException $e) {
+                Log::error($e->getMessage());
+                return response(['errors' => ['error'=> 'Could not send email, try again', ],
+                ], Response::HTTP_UNPROCESSABLE_ENTITY);
+            }
             return $this->respondWithToken($user);
         }
         return response('Credential not found or please try to login & resend email.', Response::HTTP_NOT_ACCEPTABLE);

@@ -11,6 +11,9 @@
 
 # Steps to follow
 
+<!-- add mustVerifyEmail interface on user model if want to verify -->
+<!-- user will not be able to login if email is not verified -->
+
 ## Steps 1
 
 1. Add Contract `hasBreezer` and `JWTSubject` to your authenticatable model like shown below:

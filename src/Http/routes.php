@@ -10,7 +10,7 @@ Route::patch('user', 'AuthController@update')->name('user.update');
 
 // email verification
 Route::post('/email/verify/resend', 'VerifyEmailController@resend')->name('verification.resend');
-Route::post('/email/verify/{id}', 'VerifyEmailController@verifyEmail')->name('verification.verify');
+Route::get('/email/verify/{id}', 'VerifyEmailController@verifyEmail')->name('verification.verify');
 
 // Password Resets
 Route::post('/forgot-password', 'PasswordResetEmailController@store')->name('user.password.email');

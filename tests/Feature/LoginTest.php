@@ -22,6 +22,7 @@ class LoginTest extends TestCase
     public function user_can_login_and_then_logout()
     {
         $user  = $this->authUser();
+        $user->update(['email_verified_at' => now()]);
         $this->postJson(route('user.login'), ['email'=>$user->email, 'password'=>'secret123']);
         $this->assertTrue(auth()->check());
         $this->assertEquals(1, $user->tokens()->count());

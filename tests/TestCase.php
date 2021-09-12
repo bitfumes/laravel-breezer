@@ -56,9 +56,9 @@ class TestCase extends BaseTestCase
         return SocialProfileFactory::new()->count($num)->create($args);
     }
 
-    public function authUser()
+    public function authUser($args = [])
     {
-        $user = $this->createUser();
+        $user = $this->createUser($args);
         Sanctum::actingAs($user);
         return $user;
     }

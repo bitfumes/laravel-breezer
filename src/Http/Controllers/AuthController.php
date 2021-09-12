@@ -62,28 +62,4 @@ class AuthController extends Controller
             'data' => new $this->resource($user),
         ], Response::HTTP_ACCEPTED);
     }
-
-    /**
-     * @param $token
-     * @return JsonResponse
-     */
-    protected function respondWithToken($user)
-    {
-        $userResource = config('breezer.resources.user');
-        $token        = $user->createToken('web');
-        return response()->json([
-            'access_token' => $token->plainTextToken,
-            'user'         => new $userResource($user),
-        ]);
-    }
-
-    /**
-     * Refresh a token.
-     *
-     * @return JsonResponse
-     */
-    public function refresh()
-    {
-        return $this->respondWithToken(auth()->refresh());
-    }
 }

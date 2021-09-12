@@ -28,7 +28,7 @@ class UserFactory extends Factory
     public function definition()
     {
         return [
-            'email_verified_at'      => now(),
+            'email_verified_at'      => null,
             'avatar'                 => $this->faker->imageUrl(),
             'name'                   => $this->faker->name,
             'email'                  => $this->faker->unique()->safeEmail,
@@ -36,5 +36,14 @@ class UserFactory extends Factory
             'password'               => '$2y$04$7Rghdz2qIqjogyM79epcFOaEo9DXcdsVJHDmq3KrVFUbjfrMKKHYC', // secret123
             'remember_token'         => Str::random(10),
         ];
+    }
+
+    public function verified()
+    {
+        return $this->state(function (array $attributes) {
+            return [
+                'email_verified_at' => now(),
+            ];
+        });
     }
 }

@@ -47,19 +47,6 @@ class BreezerServiceProvider extends ServiceProvider
         ];
     }
 
-    /**
-     * Register any application services.
-     *
-     * @return void
-     */
-    public function register()
-    {
-        // Register facade
-        $this->app->singleton('breezer', function () {
-            return new Breezer();
-        });
-    }
-
     public function publishThings()
     {
         if ($this->app->runningInConsole()) {

@@ -5,8 +5,11 @@ namespace Bitfumes\Breezer\Http\Controllers;
 use Carbon\Carbon;
 use Illuminate\Support\Str;
 use Bitfumes\Breezer\SocialProfile;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
 use Laravel\Socialite\Facades\Socialite;
+use Bitfumes\Breezer\Helpers\TokenService;
+use Symfony\Component\HttpFoundation\Response;
 
 class SocialProfileController extends AuthController
 {
@@ -22,10 +25,15 @@ class SocialProfileController extends AuthController
      */
     public function redirectToProvider($service)
     {
-        return Socialite::driver($service)
-            ->stateless()
-            ->redirect()
-            ->getTargetUrl();
+        try {
+            return Socialite::driver($service)
+                ->stateless()
+                ->redirect()
+                ->getTargetUrl();
+        } catch (\Exception $e) {
+            Log::error($e->getMessage());
+            return response(['errors' => ['error' => 'There is some issue with login.']], Response::HTTP_NOT_ACCEPTABLE);
+        }
     }
 
     /**
@@ -46,12 +54,13 @@ class SocialProfileController extends AuthController
      */
     protected function userProfile($details, $service)
     {
-        $social   = $this->checkSocialProfile($details);
-        $user     = $social ? $this->user::find($social->user_id) :
+        $social = $this->checkSocialProfile($details);
+
+        $user  = $social ?
+            $this->user::find($social->user_id) :
             $this->createSocialProfile($details, $service);
-        auth()->login($user);
-        $token    = auth()->tokenById($user->id);
-        return $this->respondWithToken($token);
+
+        return response(TokenService::create($user));
     }
 
     /**

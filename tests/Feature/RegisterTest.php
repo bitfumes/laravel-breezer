@@ -5,7 +5,6 @@ namespace Bitfumes\Breezer\Tests\Feature;
 use Bitfumes\Breezer\Tests\User;
 use Bitfumes\Breezer\Tests\TestCase;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -31,30 +30,6 @@ class RegisterTest extends TestCase
         Event::assertDispatched(Registered::class);
         $this->assertTrue(Hash::check('secret123', $user['password']));
         $this->assertDatabaseHas('users', ['email'=> $user['email'], 'email_verified_at'=>null]);
-    }
-
-    /** @test */
-    public function a_user_get_404_if_user_not_found_via_id_while_verifying_email()
-    {
-        $this->getJson(route('verification.verify', $notInDBUserId = 4000), ['signature'=>'random'])->assertStatus(404);
-    }
-
-    /** @test */
-    public function user_can_resend_verify_email()
-    {
-        Mail::fake();
-        $user = $this->createUser();
-        $this->postJson(route('verification.resend', $user->toArray()))->assertStatus(202);
-        // Event::assertDispatched(Registered::class);
-    }
-
-    /** @test */
-    public function user_can_Verify_its_email()
-    {
-        Mail::fake();
-        $user = $this->createUser(['email_verified_at' => null]);
-        $this->getJson(route('verification.verify', $user->id));
-        $this->assertNotNull($user->fresh()->email_verified_at);
     }
 
     /** @test */
@@ -93,6 +68,7 @@ class RegisterTest extends TestCase
     public function a_user_can_login_with_email_and_password()
     {
         $user = $this->createUser();
+        $user->update(['email_verified_at' => now()]);
         $res  = $this->postJson(route('user.login'), ['email'=>$user->email, 'password'=>'secret123'])->json();
         $this->assertNotNull($res['access_token']);
     }

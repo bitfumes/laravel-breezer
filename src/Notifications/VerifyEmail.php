@@ -3,9 +3,8 @@
 namespace Bitfumes\Breezer\Notifications;
 
 use Carbon\Carbon;
-use Illuminate\Support\Str;
 use Illuminate\Bus\Queueable;
-use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Config;
 use Illuminate\Notifications\Notification;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
@@ -63,9 +62,9 @@ class VerifyEmail extends Notification implements ShouldQueue
     {
         $front_url   = app()['config']['breezer.front_url'];
         $verify_url  = app()['config']['breezer.verify_url'];
-        $sign        = Str::random(40);
-        Cache::put("verify-{$notifiable->id}", $sign, Carbon::now()->addMinute(5));
-        return "{$front_url}/{$verify_url}?user={$notifiable->getKey()}&signature={$sign}";
+        $expires     = Carbon::now()->addMinutes(Config::get('auth.verification.expire', 60))->timestamp;
+        $sign        = sha1($expires . $notifiable->getEmailForVerification());
+        return "{$front_url}/{$verify_url}?user={$notifiable->getKey()}&expires=$expires&signature={$sign}";
     }
 
     /**

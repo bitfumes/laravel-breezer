@@ -21,11 +21,11 @@ trait Breezer
     //  *
     //  * @return void
     //  */
-    // public function sendEmailVerificationNotification()
-    // {
-    //     $verify = app()['config']['breezer.notifications.verify'];
-    //     $this->notify(new $verify());
-    // }
+    public function sendEmailVerificationNotification()
+    {
+        $verify = app()['config']['breezer.notifications.verify'];
+        $this->notify(new $verify());
+    }
 
     /**
      * Send the password reset notification.

@@ -4,6 +4,7 @@ namespace Bitfumes\Breezer\Http\Controllers;
 
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Hash;
+use Bitfumes\Breezer\Helpers\TokenService;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Symfony\Component\HttpFoundation\Response;
 use Bitfumes\Breezer\Http\Requests\LoginRequest;
@@ -39,11 +40,10 @@ class LoginController extends AuthController
             return $this->noTokenResponse();
         }
 
-        if ($user instanceof MustVerifyEmail && !$this->checkEmailVerify()) {
+        if ($user instanceof MustVerifyEmail && !$user->hasVerifiedEmail()) {
             return $this->emailNotVerifiedResponse();
         }
-
-        return $this->respondWithToken($user);
+        return response(TokenService::create($user));
     }
 
     /**
@@ -64,15 +64,6 @@ class LoginController extends AuthController
     protected function emailNotVerifiedResponse()
     {
         return response(['errors' => ['verify' => 'Please verify your email first.']], Response::HTTP_NOT_ACCEPTABLE);
-    }
-
-    /**
-     * @return mixed
-     */
-    protected function checkEmailVerify()
-    {
-        $user = $this->user::whereEmail(request('email'))->first();
-        return $user->email_verified_at;
     }
 
     /**

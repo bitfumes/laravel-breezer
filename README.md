@@ -7,7 +7,7 @@
 
 # Install
 
-`composer require bitfumes/breezer`
+`composer require bitfumes/laravel-breezer`
 
 # Steps to follow
 
@@ -16,16 +16,16 @@
 
 ## Steps 1
 
-1. Add Contract `hasBreezer` and `JWTSubject` to your authenticatable model like shown below:
-2. Add `Breezer` trait to your user model.
+1. Add `Breezer` trait to your user model.
+
+2. Add Contract `MustVerifyEmail` to your authenticatable model if you want to enable email verification.
 
 ```php
 
 use Bitfumes\Breezer\Traits\Breezer;
-use Tymon\JWTAuth\Contracts\JWTSubject;
-use Bitfumes\Breezer\Contract\HasBreezer;
+use Illuminate\Contracts\Auth\MustVerifyEmail;
 
-class User extends Authenticatable implements HasBreezer, JWTSubject
+class User extends Authenticatable implements MustVerifyEmail
 {
     use Notifiable, Breezer;
     ...
@@ -33,43 +33,6 @@ class User extends Authenticatable implements HasBreezer, JWTSubject
 ```
 
 ## Step 2
-
-Configure your config/auth.php file to update guard details
-
-- Update default guard to api
-
-```php
-'defaults' => [
-        'guard'     => 'api',
-        ...
-    ],
-```
-
-- Update api guard to 'jwt'
-
-```php
-'guards' => [
-        ... ,
-
-        'api' => [
-            'driver'   => 'jwt',
-            ...
-        ],
-    ],
-```
-
-## Step 3
-
-Add new accessor to your authenticatable model
-
-```php
-public function setPasswordAttribute($value)
-{
-    $this->attributes['password'] = bcrypt($value);
-}
-```
-
-## Step 4
 
 Now publish two new migrations
 
@@ -80,7 +43,7 @@ Now publish two new migrations
 php artisan vendor:publish --tag=breezer:migrations
 ```
 
-## Step 5
+## Step 3
 
 After getting migrations in your laravel application, its time to have these tables in your database.
 
@@ -88,7 +51,18 @@ After getting migrations in your laravel application, its time to have these tab
 php artisan migrate
 ```
 
-## Step 6
+## Step 4
+
+Set your frontend URL on your .env file
+FRONT_URL
+
+Set frontend Verify Email URL  on your .env file
+BREEZER_VERIFY_URL
+
+Set frontend password reset URL  on your .env file
+BREEZER_RESET_URL
+
+## Step 5
 
 Because every user need to verify its email and to send email we are going to use laravel queue.
 

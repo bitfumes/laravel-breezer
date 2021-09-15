@@ -9,7 +9,7 @@ use Bitfumes\Breezer\Tests\Database\Factories\UserFactory;
 class SocialProfileFactory extends Factory
 {
     /**
-     * The name of the factory's corresponding model.
+     * The name of the factory's corresponding model
      *
      * @var string
      */

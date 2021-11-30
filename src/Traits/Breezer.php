@@ -12,7 +12,8 @@ trait Breezer
     public static function bootBreezer(): void
     {
         static::retrieved(function ($model) {
-            $model->fillable = array_merge($model->fillable, ['avatar']);
+            $model->fillable = array_merge($model->fillable, ['avatar', 'roles']);
+            $model->casts = array_merge($model->casts, ['roles' => 'json']);
         });
     }
 

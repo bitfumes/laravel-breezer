@@ -13,7 +13,12 @@ trait Breezer
     {
         static::retrieved(function ($model) {
             $model->fillable = array_merge($model->fillable, ['avatar', 'roles']);
-            $model->casts = array_merge($model->casts, ['roles' => 'json']);
+            $model->mergeCasts(['roles' => 'json']);
+        });
+
+        static::saving(function ($model) {
+            $model->fillable = array_merge($model->fillable, ['avatar', 'roles']);
+            $model->mergeCasts(['roles' => 'json']);
         });
     }
 

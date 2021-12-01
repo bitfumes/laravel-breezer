@@ -71,9 +71,9 @@ class LoginController extends AuthController
      *
      * @return JsonResponse
      */
-    public function logout()
+    public function logout($tokenName = 'web')
     {
-        auth()->user()->tokens()->delete();
+        auth()->user()->tokens()->whereName($tokenName)->delete();
         return response()->json(['message' => 'Successfully logged out']);
     }
 }

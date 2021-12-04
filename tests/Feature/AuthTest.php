@@ -13,7 +13,7 @@ class AuthTest extends TestCase
     public function api_can_update_user_details()
     {
         $user = $this->authUser();
-        $res  = $this->patch(route('user.update'), [
+        $res  = $this->patchJson(route('user.update'), [
             'name'  => $user->name,
             'email' => 'abc@def.com', ]);
         $this->assertEquals($user->name, json_decode($res->getContent())->data->name);

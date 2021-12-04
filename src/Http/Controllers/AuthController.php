@@ -16,7 +16,7 @@ class AuthController extends Controller
      */
     public function __construct()
     {
-        $this->middleware('auth:sanctum')->only('getUser');
+        $this->middleware('auth:sanctum')->only('getUser', 'update');
         $this->resource = app()['config']['breezer.resources.user'];
         $this->user     = app()['config']['breezer.models.user'];
     }

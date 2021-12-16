@@ -9,17 +9,10 @@ use Illuminate\Support\Facades\Storage;
 
 trait Breezer
 {
-    public static function bootBreezer(): void
+    public function initializeBreezer(): void
     {
-        static::retrieved(function ($model) {
-            $model->fillable = array_merge($model->fillable, ['avatar', 'roles']);
-            $model->mergeCasts(['roles' => 'json']);
-        });
-
-        static::saving(function ($model) {
-            $model->fillable = array_merge($model->fillable, ['avatar', 'roles']);
-            $model->mergeCasts(['roles' => 'json']);
-        });
+        $this->fillable = array_merge($this->fillable, ['avatar', 'roles']);
+        $this->mergeCasts(['roles' => 'json']);
     }
 
     // /**

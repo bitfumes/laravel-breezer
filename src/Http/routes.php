@@ -17,7 +17,7 @@ Route::post('/forgot-password', 'PasswordResetEmailController@store')->name('use
 Route::post('/password/reset', 'ResetPasswordController@store')->name('user.password.reset');
 
 // Update Password
-Route::post('/password/update', 'ResetPasswordController@updatePassword')->name('user.password.update');
+Route::post('/password/update', 'UpdatePasswordController')->name('user.password.update');
 
 // Social Login
 Route::post('social-login/{service}', 'SocialProfileController@redirectToProvider');

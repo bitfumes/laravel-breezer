@@ -58,12 +58,12 @@ class UserPasswordReset extends Notification implements ShouldQueue
         }
         $front_url   = app()['config']['breezer.front_url'];
         $reset_url   = app()['config']['breezer.reset_url'];
-
+        $expire = config('auth.passwords.users.expire');
         return (new MailMessage())
             ->subject('Reset Password Notification')
             ->line('You are receiving this email because we received a password reset request for your account.')
             ->action('Reset Password', "{$front_url}/{$reset_url}?token={$this->token}")
-            ->line('This password reset link will expire in :count minutes.', ['count' => config('auth.passwords.users.expire')])
+            ->line("This password reset link will expire in $expire minutes.")
             ->line('If you did not request a password reset, no further action is required.');
     }
 

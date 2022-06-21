@@ -2,6 +2,7 @@
 
 namespace Bitfumes\Breezer\Http\Controllers;
 
+use Bitfumes\Breezer\Notifications\UserPasswordReset;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rules;
@@ -32,7 +33,7 @@ class ResetPasswordController extends Controller
                     'remember_token' => Str::random(60),
                 ])->save();
 
-                event(new PasswordReset($user));
+                event(new UserPasswordReset($user));
             }
         );
 

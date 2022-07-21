@@ -14,7 +14,7 @@ class LoginController extends AuthController
     public function __construct()
     {
         $this->middleware('auth:sanctum')->only('logout');
-        $this->user= app()['config']['breezer.models.user'];
+        $this->user = app()['config']['breezer.models.user'];
     }
 
     /**
@@ -34,13 +34,13 @@ class LoginController extends AuthController
      */
     protected function performLogin($request)
     {
-        $user  = $this->user::whereEmail($request->email)->first();
+        $user = $this->fetchUser($request);
 
-        if (!$user || !Hash::check($request->password, $user->password)) {
+        if (! $user || ! Hash::check($request->password, $user->password)) {
             return $this->noTokenResponse();
         }
 
-        if ($user instanceof MustVerifyEmail && !$user->hasVerifiedEmail()) {
+        if ($user instanceof MustVerifyEmail && ! $user->hasVerifiedEmail()) {
             return $this->emailNotVerifiedResponse();
         }
         return response(TokenService::create($user));
@@ -75,5 +75,10 @@ class LoginController extends AuthController
     {
         auth()->user()->tokens()->whereName($tokenName)->delete();
         return response()->json(['message' => 'Successfully logged out']);
+    }
+
+    public function fetchUser($request)
+    {
+        return $this->user::whereEmail($request->email)->first();
     }
 }

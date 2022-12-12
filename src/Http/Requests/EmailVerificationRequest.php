@@ -34,7 +34,7 @@ class EmailVerificationRequest extends FormRequest
             return false;
         }
 
-        if ($user->markEmailAsVerified()) {
+        if ($user->hasVerifiedEmail()) {
             return false;
         }
 

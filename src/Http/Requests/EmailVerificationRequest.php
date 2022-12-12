@@ -30,11 +30,15 @@ class EmailVerificationRequest extends FormRequest
 
     public function validate()
     {
-        if (!$user = $this->userAvailable()) {
+        if (! $user = $this->userAvailable()) {
             return false;
         }
 
-        if (!$this->verifySignature($user)) {
+        if ($user->markEmailAsVerified()) {
+            return false;
+        }
+
+        if (! $this->verifySignature($user)) {
             return false;
         }
 
@@ -50,10 +54,6 @@ class EmailVerificationRequest extends FormRequest
     public function verifySignature($user)
     {
         $sign = sha1($this->expires . $user->getEmailForVerification());
-        if (now()->timestamp < $this->expires && $sign === $this->signature) {
-            return true;
-        }
-
-        return false;
+        return (bool) (now()->timestamp < $this->expires && $sign === $this->signature);
     }
 }
